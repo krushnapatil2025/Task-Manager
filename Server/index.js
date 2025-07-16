@@ -12,16 +12,20 @@ const reportRoutes = require("./routes/reportRoutes");
 
 const app = express();
 
-// ✅ Allow multiple origins (local + Vercel)
+// ✅ Allow local + multiple Vercel URLs (explicit + wildcard support)
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://task-manager-2e7s-4p7dyaalx-krushnapatil2025-gmailcoms-projects.vercel.app'
+  'https://task-manager-2e7s-4p7dyaalx-krushnapatil2025-gmailcoms-projects.vercel.app',
+  'https://task-manager-i21z.vercel.app',
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // allow requests with no origin (like mobile apps or curl requests)
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (
+      !origin || 
+      allowedOrigins.includes(origin) || 
+      /\.vercel\.app$/.test(origin) // ✅ allow all vercel.app subdomains
+    ) {
       callback(null, true);
     } else {
       callback(new Error('CORS policy violation: ' + origin));
