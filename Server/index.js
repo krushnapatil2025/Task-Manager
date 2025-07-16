@@ -12,46 +12,42 @@ const reportRoutes = require("./routes/reportRoutes");
 
 const app = express();
 
-// ✅ Allow local + multiple Vercel URLs (explicit + wildcard support)
+// ✅ CORS Configuration
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://task-manager-2e7s-4p7dyaalx-krushnapatil2025-gmailcoms-projects.vercel.app',
   'https://task-manager-i21z.vercel.app',
+  'https://task-manager-2e7s-4p7dyaalx-krushnapatil2025-gmailcoms-projects.vercel.app'
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (
-      !origin || 
-      allowedOrigins.includes(origin) || 
-      /\.vercel\.app$/.test(origin) // ✅ allow all vercel.app subdomains
-    ) {
+    if (!origin || allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('CORS policy violation: ' + origin));
+      callback(new Error("CORS policy violation: " + origin));
     }
   },
   methods: ["GET", "PUT", "POST", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
+  credentials: true
 }));
 
-// Connect to MongoDB
+// ✅ Connect to MongoDB
 connectDB();
 
-// Middleware
+// ✅ Middleware
 app.use(express.json());
 
-// Routes
+// ✅ API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/report", reportRoutes);
 
-// Static folder for uploads
+// ✅ Serve static files (uploads)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Start server
+// ✅ Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
